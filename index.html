@@ -13,35 +13,44 @@
 <link rel="manifest" href="manifest.json" />
 <style>
   * { box-sizing: border-box; }
-  body {
+  html, body {
     margin: 0;
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: #f2ece2;
-    padding: 20px;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  body {
+    padding: max(24px, env(safe-area-inset-top)) 0 max(24px, env(safe-area-inset-bottom));
+    display: flex;
+    justify-content: center;
   }
   .card {
     width: 100%;
-    max-width: 380px;
+    max-width: 560px;
     background: #f7f1e7;
-    border-radius: 20px;
-    padding: 22px;
-    box-shadow: 0 1px 3px rgba(58,46,38,0.08), 0 8px 24px rgba(58,46,38,0.06);
-    border: 1px solid #eadfcf;
+    border-radius: 0;
+    padding: 28px 24px;
+    min-height: calc(100vh - 48px);
   }
-  .home-title { font-size: 20px; font-weight: 700; color: #3a2e26; letter-spacing: -0.2px; }
-  .home-subtitle { font-size: 12.5px; color: #8a7563; margin-top: 3px; font-family: 'Courier New', monospace; }
-  .empty-state { font-size: 13px; color: #8a7563; line-height: 1.6; background: #fffdfb; border: 1px solid #eadfcf; border-radius: 12px; padding: 14px 16px; margin: 16px 0; }
-  .habit-list { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
-  .habit-row { display: flex; align-items: center; gap: 6px; }
-  .habit-row-btn { flex: 1; display: flex; align-items: center; gap: 10px; background: #fffdfb; border: 1px solid #eadfcf; border-radius: 12px; padding: 12px 14px; cursor: pointer; text-align: left; }
-  .habit-dot { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-  .habit-name { flex: 1; font-size: 14.5px; color: #3a2e26; font-weight: 600; }
-  .habit-streak { display: flex; align-items: center; gap: 3px; font-size: 12px; font-family: 'Courier New', monospace; font-weight: 700; }
-  .habit-del-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #eadfcf; background: #fffdfb; color: #a2947f; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 15px; }
+  @media (min-width: 620px) {
+    .card {
+      border-radius: 24px;
+      min-height: auto;
+      padding: 32px 28px;
+      box-shadow: 0 1px 3px rgba(58,46,38,0.08), 0 8px 24px rgba(58,46,38,0.06);
+      border: 1px solid #eadfcf;
+    }
+  }
+  .home-title { font-size: 26px; font-weight: 700; color: #3a2e26; letter-spacing: -0.2px; }
+  .home-subtitle { font-size: 14px; color: #8a7563; margin-top: 4px; font-family: 'Courier New', monospace; }
+  .empty-state { font-size: 15px; color: #8a7563; line-height: 1.6; background: #fffdfb; border: 1px solid #eadfcf; border-radius: 14px; padding: 18px 18px; margin: 20px 0; }
+  .habit-list { display: flex; flex-direction: column; gap: 10px; margin: 18px 0; }
+  .habit-row { display: flex; align-items: center; gap: 8px; }
+  .habit-row-btn { flex: 1; display: flex; align-items: center; gap: 12px; background: #fffdfb; border: 1px solid #eadfcf; border-radius: 14px; padding: 16px 16px; cursor: pointer; text-align: left; }
+  .habit-dot { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .habit-name { flex: 1; font-size: 17px; color: #3a2e26; font-weight: 600; }
+  .habit-streak { display: flex; align-items: center; gap: 4px; font-size: 14px; font-family: 'Courier New', monospace; font-weight: 700; }
+  .habit-del-btn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid #eadfcf; background: #fffdfb; color: #a2947f; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 17px; }
   .add-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border-radius: 12px; border: 1.5px dashed #d3c3ae; background: transparent; color: #8a7563; font-size: 14px; font-weight: 600; cursor: pointer; }
   .add-form { background: #fffdfb; border: 1px solid #eadfcf; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
   .add-input { font-size: 14.5px; padding: 10px 12px; border-radius: 9px; border: 1.5px solid #e4d8c8; background: #fff; color: #3a2e26; font-family: inherit; width: 100%; }
