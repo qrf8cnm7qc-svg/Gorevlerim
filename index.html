@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Görevlerim</title>
+<meta name="theme-color" content="#f2ece2" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Görevlerim" />
+<link rel="apple-touch-icon" href="icon-180.png" />
+<link rel="icon" href="icon-192.png" />
+<link rel="manifest" href="manifest.json" />
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100dvh;
+    background: #f2ece2;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+  }
+  .card {
+    width: 100%;
+    max-width: 560px;
+    height: 100%;
+    background: #f7f1e7;
+    border-radius: 0;
+    padding: max(28px, env(safe-area-inset-top) + 12px) 24px max(24px, env(safe-area-inset-bottom) + 12px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (min-width: 620px) {
+    html, body { overflow: auto; }
+    body { padding: 24px 0; }
+    .card {
+      height: auto;
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 1px 3px rgba(58,46,38,0.08), 0 8px 24px rgba(58,46,38,0.06);
+      border: 1px solid #eadfcf;
+    }
+  }
+  .home-title { font-size: 26px; font-weight: 700; color: #3a2e26; letter-spacing: -0.2px; }
+  .home-subtitle { font-size: 14px; color: #8a7563; margin-top: 4px; font-family: 'Courier New', monospace; }
+  .empty-state { font-size: 15px; color: #8a7563; line-height: 1.6; background: #fffdfb; border: 1px solid #eadfcf; border-radius: 14px; padding: 18px 18px; margin: 20px 0; }
+  .habit-list { display: flex; flex-direction: column; gap: 10px; margin: 18px 0; }
+  .habit-row { display: flex; align-items: center; gap: 8px; }
+  .habit-row-btn { flex: 1; display: flex; align-items: center; gap: 12px; background: #fffdfb; border: 1px solid #eadfcf; border-radius: 14px; padding: 16px 16px; cursor: pointer; text-align: left; }
+  .habit-dot { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .habit-name { flex: 1; font-size: 17px; color: #3a2e26; font-weight: 600; }
+  .habit-streak { display: flex; align-items: center; gap: 4px; font-size: 14px; font-family: 'Courier New', monospace; font-weight: 700; }
+  .habit-del-btn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid #eadfcf; background: #fffdfb; color: #a2947f; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 17px; }
+  .add-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border-radius: 12px; border: 1.5px dashed #d3c3ae; background: transparent; color: #8a7563; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .add-form { background: #fffdfb; border: 1px solid #eadfcf; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .add-input { font-size: 14.5px; padding: 10px 12px; border-radius: 9px; border: 1.5px solid #e4d8c8; background: #fff; color: #3a2e26; font-family: inherit; width: 100%; }
+  .add-input:focus { outline: none; border-color: #c45a2a; }
+  .color-row { display: flex; gap: 8px; }
+  .color-dot { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; padding: 0; }
+  .add-form-btns { display: flex; gap: 8px; justify-content: flex-end; }
+  .cancel-btn { padding: 8px 14px; border-radius: 9px; border: 1px solid #e4d8c8; background: transparent; color: #8a7563; font-size: 13px; cursor: pointer; }
+  .confirm-btn { padding: 8px 16px; border-radius: 9px; border: none; color: #fff9f4; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .back-btn { display: flex; align-items: center; gap: 6px; background: transparent; border: none; color: #8a7563; font-size: 12.5px; cursor: pointer; margin-bottom: 14px; padding: 0; font-family: 'Courier New', monospace; }
+  .header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .badge { width: 54px; height: 54px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); }
+  .title { font-size: 18px; font-weight: 700; color: #3a2e26; letter-spacing: -0.2px; }
+  .subtitle { font-size: 12.5px; color: #8a7563; margin-top: 2px; font-family: 'Courier New', monospace; }
+  .today-btn { width: 100%; display: flex; align-items: center; justify-content: center; padding: 13px 16px; border-radius: 14px; font-size: 15px; cursor: pointer; margin-bottom: 8px; border: none; }
+  .streak-line { display: flex; align-items: center; gap: 6px; justify-content: center; font-size: 12px; margin-bottom: 14px; font-family: 'Courier New', monospace; }
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; margin-bottom: 10px; }
+  .nav-btn { width: 28px; height: 28px; border-radius: 8px; border: none; background: transparent; color: #8a7563; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
+  .nav-btn:hover { background: #ece3d8; }
+  .month-label { font-size: 13.5px; font-weight: 600; color: #3a2e26; font-family: 'Courier New', monospace; letter-spacing: 0.3px; }
+  .week-row { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 6px; }
+  .week-cell { text-align: center; font-size: 10.5px; color: #b0a08c; font-family: 'Courier New', monospace; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .day-cell { aspect-ratio: 1; border-radius: 9px; font-size: 12.5px; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; border: none; }
+  .day-cell:hover:not(:disabled) { filter: brightness(1.08); }
+  .footer { margin-top: 16px; text-align: center; font-size: 11.5px; color: #a2947f; font-family: 'Courier New', monospace; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(58,46,38,0.4); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 10; }
+  .modal-card { background: #f7f1e7; border-radius: 16px; padding: 20px; max-width: 320px; width: 100%; border: 1px solid #eadfcf; }
+  .modal-title { font-size: 15px; font-weight: 700; color: #3a2e26; margin-bottom: 8px; }
+  .modal-text { font-size: 13px; color: #8a7563; line-height: 1.5; margin-bottom: 16px; }
+  .check-icon { display: inline-flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const AYLAR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const GUNLER = ["Pt","Sa","Ça","Pe","Cu","Ct","Pz"];
+const RENKLER = [
+  { ad:"kiremit", ana:"#c45a2a", koyu:"#8a3c1a" },
+  { ad:"çam", ana:"#3f6b52", koyu:"#274838" },
+  { ad:"çivit", ana:"#3a5a8c", koyu:"#233a5c" },
+  { ad:"erik", ana:"#7a4a7d", koyu:"#4f2f52" },
+  { ad:"hardal", ana:"#b98a2e", koyu:"#7d5c1c" },
+  { ad:"gül", ana:"#b2495a", koyu:"#7a2f3b" },
+];
+function pad(n){ return String(n).padStart(2,"0"); }
+function keyFor(y,m,d){ return `${y}-${pad(m+1)}-${pad(d)}`; }
+function todayKey(){ const t=new Date(); return keyFor(t.getFullYear(),t.getMonth(),t.getDate()); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+function loadHabits(){ try { return JSON.parse(localStorage.getItem("habits-list")||"[]"); } catch(e){ return []; } }
+function saveHabits(list){ localStorage.setItem("habits-list", JSON.stringify(list)); }
+function loadDays(id){ try { return JSON.parse(localStorage.getItem("habit-days:"+id)||"{}"); } catch(e){ return {}; } }
+function saveDays(id, days){ localStorage.setItem("habit-days:"+id, JSON.stringify(days)); }
+
+function streakFor(days){
+  const tKey = todayKey();
+  let count = 0;
+  const cursor = new Date();
+  if(!days[tKey]) cursor.setDate(cursor.getDate()-1);
+  while(true){
+    const k = keyFor(cursor.getFullYear(), cursor.getMonth(), cursor.getDate());
+    if(days[k]){ count++; cursor.setDate(cursor.getDate()-1); } else break;
+  }
+  return count;
+}
+
+function checkSvg(color, size, strokeWidth){
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+}
+
+let state = {
+  habits: loadHabits(),
+  daysByHabit: {},
+  openHabitId: null,
+  adding: false,
+  newColor: 0,
+  viewDate: (()=>{ const t=new Date(); return {y:t.getFullYear(), m:t.getMonth()}; })(),
+  confirmDelete: null,
+};
+state.habits.forEach(h => { state.daysByHabit[h.id] = loadDays(h.id); });
+
+function render(){
+  const root = document.getElementById("root");
+  root.innerHTML = "";
+  if(state.openHabitId){
+    root.appendChild(renderDetail());
+  } else {
+    root.appendChild(renderHome());
+  }
+  if(state.confirmDelete){
+    root.appendChild(renderConfirmModal());
+  }
+}
+
+function renderHome(){
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const header = document.createElement("div");
+  header.innerHTML = `<div class="home-title">Görevlerim</div>
+    <div class="home-subtitle">${state.habits.length === 0 ? "henüz görev yok" : state.habits.length + " görev takip ediliyor"}</div>`;
+  card.appendChild(header);
+
+  if(state.habits.length === 0 && !state.adding){
+    const empty = document.createElement("div");
+    empty.className = "empty-state";
+    empty.textContent = "Her gün yapmak istediğin bir şeyi ekle — ilaç, egzersiz, su içmek, ne olursa. Yaptığın gün tik atarsın.";
+    card.appendChild(empty);
+  }
+
+  const list = document.createElement("div");
+  list.className = "habit-list";
+  state.habits.forEach(h => {
+    const c = RENKLER[h.colorIdx % RENKLER.length];
+    const days = state.daysByHabit[h.id] || {};
+    const st = streakFor(days);
+    const doneToday = !!days[todayKey()];
+
+    const row = document.createElement("div");
+    row.className = "habit-row";
+
+    const btn = document.createElement("button");
+    btn.className = "habit-row-btn";
+    btn.innerHTML = `
+      <span class="habit-dot" style="background:${doneToday ? c.ana : "transparent"}; border:2px solid ${c.ana};">
+        ${doneToday ? checkSvg("#fff9f4", 13, 3) : ""}
+      </span>
+      <span class="habit-name">${escapeHtml(h.name)}</span>
+      ${st > 0 ? `<span class="habit-streak" style="color:${c.ana}">🔥 ${st}</span>` : ""}
+    `;
+    btn.onclick = () => { state.openHabitId = h.id; render(); };
+    row.appendChild(btn);
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "habit-del-btn";
+    delBtn.innerHTML = "🗑";
+    delBtn.onclick = () => { state.confirmDelete = h.id; render(); };
+    row.appendChild(delBtn);
+
+    list.appendChild(row);
+  });
+  card.appendChild(list);
+
+  if(!state.adding){
+    const addBtn = document.createElement("button");
+    addBtn.className = "add-btn";
+    addBtn.innerHTML = `<span>+</span><span>Yeni görev ekle</span>`;
+    addBtn.onclick = () => { state.adding = true; render(); setTimeout(()=>{ const inp=document.getElementById("new-habit-input"); if(inp) inp.focus(); },0); };
+    card.appendChild(addBtn);
+  } else {
+    const form = document.createElement("div");
+    form.className = "add-form";
+
+    const input = document.createElement("input");
+    input.className = "add-input";
+    input.id = "new-habit-input";
+    input.placeholder = "örn. Demir takviyesi";
+    input.maxLength = 40;
+    input.onkeydown = (e) => {
+      if(e.key === "Enter") addHabit(input.value);
+      if(e.key === "Escape"){ state.adding = false; render(); }
+    };
+    form.appendChild(input);
+
+    const colorRow = document.createElement("div");
+    colorRow.className = "color-row";
+    RENKLER.forEach((c,i) => {
+      const dot = document.createElement("button");
+      dot.className = "color-dot";
+      dot.style.background = c.ana;
+      dot.style.outline = state.newColor === i ? "2px solid #3a2e26" : "none";
+      dot.style.outlineOffset = "2px";
+      dot.onclick = () => { state.newColor = i; render(); setTimeout(()=>{ const inp=document.getElementById("new-habit-input"); if(inp){ inp.focus(); inp.value = input.value; } },0); };
+      colorRow.appendChild(dot);
+    });
+    form.appendChild(colorRow);
+
+    const btns = document.createElement("div");
+    btns.className = "add-form-btns";
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "cancel-btn";
+    cancelBtn.textContent = "Vazgeç";
+    cancelBtn.onclick = () => { state.adding = false; render(); };
+    const confirmBtn = document.createElement("button");
+    confirmBtn.className = "confirm-btn";
+    confirmBtn.textContent = "Ekle";
+    confirmBtn.style.background = RENKLER[state.newColor].ana;
+    confirmBtn.onclick = () => addHabit(input.value);
+    btns.appendChild(cancelBtn);
+    btns.appendChild(confirmBtn);
+    form.appendChild(btns);
+
+    card.appendChild(form);
+  }
+
+  return card;
+}
+
+function addHabit(name){
+  name = (name||"").trim();
+  if(!name) return;
+  const habit = { id: uid(), name, colorIdx: state.newColor, createdAt: Date.now() };
+  state.habits.push(habit);
+  saveHabits(state.habits);
+  state.daysByHabit[habit.id] = {};
+  state.adding = false;
+  state.newColor = 0;
+  render();
+}
+
+function deleteHabit(id){
+  state.habits = state.habits.filter(h => h.id !== id);
+  saveHabits(state.habits);
+  localStorage.removeItem("habit-days:"+id);
+  state.confirmDelete = null;
+  if(state.openHabitId === id) state.openHabitId = null;
+  render();
+}
+
+function renderConfirmModal(){
+  const h = state.habits.find(h => h.id === state.confirmDelete);
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+  overlay.onclick = () => { state.confirmDelete = null; render(); };
+  const modal = document.createElement("div");
+  modal.className = "modal-card";
+  modal.onclick = (e) => e.stopPropagation();
+  modal.innerHTML = `
+    <div class="modal-title">Görevi sil</div>
+    <div class="modal-text">"${escapeHtml(h ? h.name : "")}" ve tüm geçmişi silinecek. Bu geri alınamaz.</div>
+  `;
+  const btns = document.createElement("div");
+  btns.className = "add-form-btns";
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "cancel-btn";
+  cancelBtn.textContent = "Vazgeç";
+  cancelBtn.onclick = () => { state.confirmDelete = null; render(); };
+  const confirmBtn = document.createElement("button");
+  confirmBtn.className = "confirm-btn";
+  confirmBtn.textContent = "Sil";
+  confirmBtn.style.background = "#b2495a";
+  confirmBtn.onclick = () => deleteHabit(state.confirmDelete);
+  btns.appendChild(cancelBtn);
+  btns.appendChild(confirmBtn);
+  modal.appendChild(btns);
+  overlay.appendChild(modal);
+  return overlay;
+}
+
+function toggleDay(habitId, y, m, d){
+  const k = keyFor(y,m,d);
+  const days = state.daysByHabit[habitId] || {};
+  if(days[k]) delete days[k]; else days[k] = true;
+  state.daysByHabit[habitId] = days;
+  saveDays(habitId, days);
+  render();
+}
+
+function escapeHtml(s){
+  const div = document.createElement("div");
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function renderDetail(){
+  const habit = state.habits.find(h => h.id === state.openHabitId);
+  const c = RENKLER[habit.colorIdx % RENKLER.length];
+  const days = state.daysByHabit[habit.id] || {};
+  const tKey = todayKey();
+  const doneToday = !!days[tKey];
+  const { y, m } = state.viewDate;
+  const st = streakFor(days);
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const backBtn = document.createElement("button");
+  backBtn.className = "back-btn";
+  backBtn.innerHTML = `‹ Görevlerim`;
+  backBtn.onclick = () => { state.openHabitId = null; render(); };
+  card.appendChild(backBtn);
+
+  const header = document.createElement("div");
+  header.className = "header";
+  header.innerHTML = `
+    <div class="badge" style="background:linear-gradient(160deg, ${c.ana} 0%, ${c.koyu} 100%)">
+      ${checkSvg("#fff9f4", 22, 2.5)}
+    </div>
+    <div>
+      <div class="title">${escapeHtml(habit.name)}</div>
+      <div class="subtitle">${st > 0 ? st + " günlük seri" : "bugün başla"}</div>
+    </div>
+  `;
+  card.appendChild(header);
+
+  const todayBtn = document.createElement("button");
+  todayBtn.className = "today-btn";
+  todayBtn.style.background = doneToday ? c.ana : "#fffdfb";
+  todayBtn.style.color = doneToday ? "#fff9f4" : "#3a2e26";
+  todayBtn.style.border = doneToday ? `1px solid ${c.ana}` : "1px solid #e4d8c8";
+  todayBtn.innerHTML = `
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:2px solid ${doneToday ? "#fff9f4" : c.ana};margin-right:10px;flex-shrink:0;">
+      ${doneToday ? checkSvg("currentColor", 16, 3) : ""}
+    </span>
+    <span style="font-size:15px;font-weight:600;">${doneToday ? "Bugün yaptım" : "Bugün yaptım işaretle"}</span>
+  `;
+  todayBtn.onclick = () => { const t = new Date(); toggleDay(habit.id, t.getFullYear(), t.getMonth(), t.getDate()); };
+  card.appendChild(todayBtn);
+
+  if(st >= 3){
+    const streakLine = document.createElement("div");
+    streakLine.className = "streak-line";
+    streakLine.style.color = c.ana;
+    streakLine.innerHTML = `🔥 <span>${st} gündür aksatmadın</span>`;
+    card.appendChild(streakLine);
+  }
+
+  const calHeader = document.createElement("div");
+  calHeader.className = "cal-header";
+  const prevBtn = document.createElement("button");
+  prevBtn.className = "nav-btn";
+  prevBtn.textContent = "‹";
+  prevBtn.onclick = () => { goMonth(-1); };
+  const monthLabel = document.createElement("div");
+  monthLabel.className = "month-label";
+  monthLabel.textContent = `${AYLAR[m]} ${y}`;
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "nav-btn";
+  nextBtn.textContent = "›";
+  nextBtn.onclick = () => { goMonth(1); };
+  calHeader.appendChild(prevBtn);
+  calHeader.appendChild(monthLabel);
+  calHeader.appendChild(nextBtn);
+  card.appendChild(calHeader);
+
+  const weekRow = document.createElement("div");
+  weekRow.className = "week-row";
+  GUNLER.forEach(g => {
+    const cell = document.createElement("div");
+    cell.className = "week-cell";
+    cell.textContent = g;
+    weekRow.appendChild(cell);
+  });
+  card.appendChild(weekRow);
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  const firstOfMonth = new Date(y, m, 1);
+  const startOffset = (firstOfMonth.getDay() + 6) % 7;
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const t0 = new Date(); t0.setHours(0,0,0,0);
+
+  for(let i=0;i<startOffset;i++){
+    grid.appendChild(document.createElement("div"));
+  }
+  for(let d=1; d<=daysInMonth; d++){
+    const k = keyFor(y,m,d);
+    const isTaken = !!days[k];
+    const dt = new Date(y,m,d);
+    const future = dt > t0;
+    const isToday = k === tKey;
+    const btn = document.createElement("button");
+    btn.className = "day-cell";
+    btn.textContent = d;
+    btn.disabled = future;
+    btn.style.background = isTaken ? c.ana : "#fffdfb";
+    btn.style.color = future ? "#c9bfb2" : (isTaken ? "#fff9f4" : "#3a2e26");
+    btn.style.cursor = future ? "default" : "pointer";
+    btn.style.border = isToday ? "1.5px solid #3a2e26" : "1px solid #e9ddd0";
+    btn.style.opacity = future ? "0.5" : "1";
+    btn.onclick = () => toggleDay(habit.id, y, m, d);
+    grid.appendChild(btn);
+  }
+  card.appendChild(grid);
+
+  const monthCount = Object.keys(days).filter(k => k.startsWith(`${y}-${pad(m+1)}`)).length;
+  const footer = document.createElement("div");
+  footer.className = "footer";
+  footer.textContent = `Bu ay: ${monthCount} gün`;
+  card.appendChild(footer);
+
+  return card;
+}
+
+function goMonth(delta){
+  let { y, m } = state.viewDate;
+  m += delta;
+  if(m < 0){ m = 11; y -= 1; }
+  if(m > 11){ m = 0; y += 1; }
+  state.viewDate = { y, m };
+  render();
+}
+
+render();
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
