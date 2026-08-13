@@ -1,0 +1,15 @@
+{
+  "name": "Görevlerim",
+  "short_name": "Görevlerim",
+  "description": "Günlük görevlerini takip et, yaptığın gün tik at.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2ece2",
+  "theme_color": "#f2ece2",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
